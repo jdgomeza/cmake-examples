@@ -1,0 +1,49 @@
+name: Win32Sample GitHub Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  create_release:
+    name: Create GitHub Release
+    runs-on: windows-2019
+    steps:
+
+      - uses: actions/checkout@v2
+
+      # - name: Install curl
+      #   shell: cmd
+      #   run: choco install curl
+
+      # - name: Get index file
+      #   shell: cmd
+      #   run: curl.exe --output index.html --url https://superuser.com
+
+      - name: Get index file
+        shell: cmd
+        working-directory: 01-basic/A-hello-cmake
+        run: |
+          cmake --version
+          cmake -h
+
+      # - name: booststraping
+      #   shell: cmd
+      #   working-directory: boost_1_78_0
+      #   run: bootstrap
+
+      # - name: building
+      #   shell: cmd
+      #   working-directory: boost_1_78_0
+      #   run: .\b2 
+
+      - name: Configure CMake
+        working-directory: 01-basic/A-hello-cmake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/01-basic/A-hello-cmake/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/01-basic/A-hello-cmake/build --config Release
